@@ -88,4 +88,9 @@ public class ListLauncherAppsActivity extends Activity {
         launchableAppsSubscription.unsubscribe();
         listView.clear();
     }
+
+    @Override
+    public void onBackPressed() {
+        // don't allow back presses to percolate.
+    }
 }
