@@ -10,11 +10,13 @@ public class Launchable {
 
     private ComponentName componentName;
     private String appName;
+    private String packageName;
     private Drawable icon;
 
-    public Launchable(ComponentName componentName, String appName, Drawable icon) {
+    public Launchable(ComponentName componentName, String appName, String packageName, Drawable icon) {
         this.componentName = componentName;
         this.appName = appName;
+        this.packageName = packageName;
         this.icon = icon;
     }
 
@@ -24,6 +26,10 @@ public class Launchable {
 
     public String getAppName() {
         return appName;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 
     public Drawable getIcon() {

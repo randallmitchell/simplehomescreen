@@ -2,6 +2,7 @@ package com.methodsignature.simplehomescreen.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -48,6 +49,20 @@ public class ListLauncherAppsActivity extends Activity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 intent.setComponent(launchable.getComponentName());
                 startActivity(intent);
+            }
+
+            @Override
+            public boolean onLaunchableLongClicked(Launchable launchable) {
+                try {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + launchable.getPackageName()));
+                    startActivity(intent);
+                    return true;
+                } catch (Exception e) {
+                    Timber.e(e, "[onLaunchableLongClicked]");
+                    Toast.makeText(ListLauncherAppsActivity.this, "Error launching app info.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
             }
         });
     }

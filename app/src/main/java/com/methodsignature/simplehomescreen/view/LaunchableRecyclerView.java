@@ -28,6 +28,7 @@ public class LaunchableRecyclerView extends RecyclerView {
 
     public interface OnLaunchableClickListener {
         void onLaunchableClicked(Launchable launchable);
+        boolean onLaunchableLongClicked(Launchable launchable);
     }
 
     @Nullable
@@ -84,6 +85,12 @@ public class LaunchableRecyclerView extends RecyclerView {
                     launchableRecyclerView.onItemClicked(position);
                 }
             });
+            holder.rootView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return launchableRecyclerView.onItemLongClicked(position);
+                }
+            });
         }
 
         @Override
@@ -103,6 +110,13 @@ public class LaunchableRecyclerView extends RecyclerView {
         if (onLaunchableClickListener != null) {
             onLaunchableClickListener.onLaunchableClicked(launchableList.get(position));
         }
+    }
+
+    private boolean onItemLongClicked(int position) {
+        if (onLaunchableClickListener != null) {
+            return onLaunchableClickListener.onLaunchableLongClicked(launchableList.get(position));
+        }
+        return false;
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

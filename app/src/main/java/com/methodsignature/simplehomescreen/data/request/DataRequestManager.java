@@ -60,6 +60,7 @@ public class DataRequestManager {
                                         return Observable.just(new Launchable(
                                                 new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name),
                                                 resolveInfo.loadLabel(packageManager).toString(),
+                                                resolveInfo.activityInfo.packageName,
                                                 resolveInfo.activityInfo.loadIcon(packageManager)));
                                     }
                                 });
