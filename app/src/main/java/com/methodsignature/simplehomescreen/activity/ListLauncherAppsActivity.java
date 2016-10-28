@@ -35,6 +35,7 @@ public class ListLauncherAppsActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.do_nothing, R.anim.slide_down);
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_launcher_apps_activity);
@@ -110,5 +111,11 @@ public class ListLauncherAppsActivity extends Activity {
     @Override
     public void onBackPressed() {
         // don't allow back presses to percolate.
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_up, R.anim.do_nothing);
     }
 }
