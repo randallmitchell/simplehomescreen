@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.methodsignature.simplehomescreen.R;
@@ -35,6 +36,7 @@ public class ListLauncherAppsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.list_launcher_apps_activity);
 
         ButterKnife.bind(this);
