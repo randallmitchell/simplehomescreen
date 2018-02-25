@@ -1,25 +1,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.methodsignature.simplehomescreen">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.methodsignature.simplehomescreen">
 
     <application
-        android:name=".global.SimpleHomeApp"
+        android:name=".Application"
         android:allowBackup="true"
         android:launchMode="singleTop"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <activity
-            android:name=".activity.ListLauncherAppsActivity"
-            android:theme="@android:style/Theme.Wallpaper" >
+            android:name=".apps.ViewAllAppsActivity"
+            android:theme="@android:style/Theme.Wallpaper">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.HOME"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
 
     </application>
