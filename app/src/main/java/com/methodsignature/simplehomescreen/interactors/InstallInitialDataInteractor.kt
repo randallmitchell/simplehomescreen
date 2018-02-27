@@ -1,10 +1,10 @@
 package com.methodsignature.simplehomescreen.interactors
 
 import android.content.pm.PackageManager
-import com.methodsignature.simplehomescreen.android.ResolveInfoExtractor
+import com.methodsignature.simplehomescreen.android.packagemanager.ResolveInfoExtractor
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivityStore
-import com.methodsignature.simplehomescreen.launchable.add
+import com.methodsignature.simplehomescreen.launchable.addAll
 import com.methodsignature.simplehomescreen.settings.SettingsStore
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
@@ -17,20 +17,21 @@ import io.reactivex.schedulers.Schedulers
  *     1. User navigates to the Android home screen.
  *     2. System populates database if this is user's first home screen visit.
  */
-class InstallInitialData(
+class InstallInitialDataInteractor(
     private val settingsStore: SettingsStore,
     private val resolveInfoExtractor: ResolveInfoExtractor,
     private val launchableActivityStore: LaunchableActivityStore,
     private val packageManager: PackageManager
 ) {
     fun installIfNotInstalled(): Completable {
-        return settingsStore.initialDataInstalled()
+        return settingsStore.isInitialDataInstalled()
             .subscribeOn(Schedulers.io())
             .flatMapCompletable {
                 if (it) {
                     Completable.complete()
                 } else {
                     resolveInfoExtractor.extract()
+                        .toObservable()
                         .flatMapIterable { it }
                         .map {
                             LaunchableActivity(
@@ -41,9 +42,9 @@ class InstallInitialData(
                         }
                         .toList()
                         .flatMapCompletable {
-                            launchableActivityStore.add(it)
+                            launchableActivityStore.addAll(it)
                         }
-                        .andThen(settingsStore.setInitialDataRetrieved(true))
+                        .andThen(settingsStore.setIsInitialDataRetrieved(true))
                 }
             }
     }

@@ -1,23 +1,29 @@
 package com.methodsignature.simplehomescreen
 
-import android.content.pm.PackageManager
-import com.methodsignature.simplehomescreen.android.DefaultResolveInfoExtractor
-import com.methodsignature.simplehomescreen.android.ResolveInfoExtractor
-import com.methodsignature.simplehomescreen.interactors.InstallInitialData
-import com.methodsignature.simplehomescreen.launchable.LaunchableActivityStore
-import com.methodsignature.simplehomescreen.settings.SettingsStore
+import com.methodsignature.simplehomescreen.android.packagemanager.DefaultResolveInfoExtractor
+import com.methodsignature.simplehomescreen.android.packagemanager.ResolveInfoExtractor
+import com.methodsignature.simplehomescreen.interactors.InstallInitialDataInteractor
 
-class ApplicationCreationScope(
-    private val settingsStore: SettingsStore,
-    private val launchableActivityStore: LaunchableActivityStore,
-    private val packageManager: PackageManager
-) {
+class ApplicationCreationScope(private val application: Application) {
 
-    val installInitialData: InstallInitialData by lazy {
-        InstallInitialData(settingsStore, resolveInfoExtractor, launchableActivityStore, packageManager)
+    private val applicationScope: ApplicationScope by lazy {
+        Application.scopeFrom(application)
+    }
+
+    private val installInitialDataInteractor: InstallInitialDataInteractor by lazy {
+        InstallInitialDataInteractor(
+            applicationScope.settingsStore,
+            resolveInfoExtractor,
+            applicationScope.launchableActivityStore,
+            application.packageManager
+        )
     }
 
     private val resolveInfoExtractor: ResolveInfoExtractor by lazy {
-        DefaultResolveInfoExtractor(packageManager)
+        DefaultResolveInfoExtractor(application.packageManager)
+    }
+
+    fun inject() {
+        application.installInitialDataInteractor = installInitialDataInteractor
     }
 }

@@ -1,9 +1,8 @@
 package com.methodsignature.simplehomescreen.apps
 
 import android.content.ComponentName
-import com.methodsignature.simplehomescreen.interactors.GetAllLaunchableActivities
-import com.methodsignature.simplehomescreen.interactors.LaunchExternalActivity
-import com.methodsignature.simplehomescreen.interactors.LaunchExternalApplicationSettings
+import com.methodsignature.simplehomescreen.interactors.GetAllLaunchableActivitiesInteractor
+import com.methodsignature.simplehomescreen.launch.AppLauncher
 import com.methodsignature.simplehomescreen.mvp.Presenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -11,9 +10,8 @@ import io.reactivex.disposables.CompositeDisposable
 
 
 class ViewAllAppsPresenter(
-    private val getLaunchablesInteractor: GetAllLaunchableActivities,
-    private val launchExternalActivityInteractor: LaunchExternalActivity,
-    private val launchExternalApplicationSettings: LaunchExternalApplicationSettings,
+    private val getLaunchablesInteractorInteractor: GetAllLaunchableActivitiesInteractor,
+    private val appLauncher: AppLauncher,
     private val viewModel: AppListViewModel,
     private val view: ViewAllAppsView
 ) : Presenter {
@@ -23,13 +21,13 @@ class ViewAllAppsPresenter(
     override fun create() {
         disposables.add(
             view.onAppClickedId()
-                .flatMapCompletable { launchExternalActivityInteractor.launch(it.componentName) }
+                .flatMapCompletable { appLauncher.launchAppComponent(it.componentName) }
                 .subscribe()
         )
 
         disposables.add(
             view.onAppLongClickedId()
-                .flatMapCompletable { launchExternalApplicationSettings.launch(it.componentName.packageName) }
+                .flatMapCompletable { appLauncher.launchAppSettings(it.componentName.packageName) }
                 .subscribe()
         )
 
@@ -38,7 +36,7 @@ class ViewAllAppsPresenter(
         )
 
         disposables.add(
-            getLaunchablesInteractor.get()
+            getLaunchablesInteractorInteractor.get()
                 .flatMap {
                     Observable.fromIterable(it)
                         .map { AppViewModel(it.readableName, ComponentName(it.packageName, it.activityName)) }

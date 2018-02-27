@@ -1,6 +1,7 @@
 package com.methodsignature.simplehomescreen
 
 import android.content.Context
+import com.methodsignature.simplehomescreen.interactors.InstallInitialDataInteractor
 
 class Application: android.app.Application() {
 
@@ -18,14 +19,12 @@ class Application: android.app.Application() {
         ApplicationScope(this)
     }
 
+    lateinit var installInitialDataInteractor: InstallInitialDataInteractor
+
     override fun onCreate() {
         super.onCreate()
+        ApplicationCreationScope(this).inject()
 
-        val applicationCreationScope = ApplicationCreationScope(
-            applicationScope.settingsStore,
-            applicationScope.launchableActivityStore,
-            packageManager)
-        val installInitialData = applicationCreationScope.installInitialData
-        installInitialData.installIfNotInstalled().subscribe()
+        installInitialDataInteractor.installIfNotInstalled().subscribe()
     }
 }

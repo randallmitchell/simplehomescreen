@@ -41,11 +41,12 @@ interface LaunchableActivityStore {
     fun getAll(): Flowable<List<LaunchableActivity>>
 
     @Insert
-    fun synchronousAdd(vararg launchableActivities: LaunchableActivity)
+    fun synchronousAddAll(vararg launchableActivities: LaunchableActivity)
+
 }
 
-fun LaunchableActivityStore.add(launchableActivities: List<LaunchableActivity>): Completable {
-    return Completable.fromCallable { synchronousAdd(*launchableActivities.toTypedArray()) }
+fun LaunchableActivityStore.addAll(launchableActivities: List<LaunchableActivity>): Completable {
+    return Completable.fromCallable { synchronousAddAll(*launchableActivities.toTypedArray()) }
 }
 
 @Database(entities = [LaunchableActivity::class], version = 1)

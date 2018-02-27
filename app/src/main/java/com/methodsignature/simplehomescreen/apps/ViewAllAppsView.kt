@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.methodsignature.simplehomescreen.R
 import com.methodsignature.simplehomescreen.android.view.EvenPaddingItemDecoration
 import io.reactivex.Observable
@@ -66,14 +67,23 @@ class LinearViewAllAppsView @JvmOverloads constructor(
             val vh = requireNotNull(holder)
 
             val model = mList[position]
-
             vh.title.text = model.readableName
-            vh.icon.setImageDrawable(context.packageManager.getActivityIcon(model.componentName))
             vh.itemView.setOnClickListener { clickListener.onNext(model) }
             vh.itemView.setOnLongClickListener {
                 longClickListener.onNext(model)
                 true
             }
+
+            vh.loadDrawableRunnable?.apply {
+                handler.removeCallbacks(vh.loadDrawableRunnable)
+            }
+
+            vh.loadDrawableRunnable = Runnable {
+                Glide.with(context)
+                    .load(context.packageManager.getActivityIcon(model.componentName))
+                    .into(vh.icon)
+            }
+            handler.post(vh.loadDrawableRunnable)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -87,6 +97,7 @@ class LinearViewAllAppsView @JvmOverloads constructor(
     }
 
     private class ViewHolder(rootView: View): RecyclerView.ViewHolder(rootView) {
+        var loadDrawableRunnable: Runnable? = null
         val icon: ImageView = rootView.findViewById(R.id.linear_view_all_apps_view_list_item_icon) as ImageView
         val title: TextView = rootView.findViewById(R.id.linear_view_all_apps_view_list_item_title) as TextView
     }

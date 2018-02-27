@@ -3,9 +3,9 @@ package com.methodsignature.simplehomescreen.apps
 import android.arch.lifecycle.ViewModelProviders
 import com.methodsignature.simplehomescreen.Application
 import com.methodsignature.simplehomescreen.ApplicationScope
-import com.methodsignature.simplehomescreen.interactors.GetAllLaunchableActivities
-import com.methodsignature.simplehomescreen.interactors.LaunchExternalActivity
-import com.methodsignature.simplehomescreen.interactors.LaunchExternalApplicationSettings
+import com.methodsignature.simplehomescreen.interactors.GetAllLaunchableActivitiesInteractor
+import com.methodsignature.simplehomescreen.launch.AppLauncher
+import com.methodsignature.simplehomescreen.launch.DefaultAppLauncher
 
 class ViewAllAppsActivityScope(private val activity: ViewAllAppsActivity) {
 
@@ -13,15 +13,14 @@ class ViewAllAppsActivityScope(private val activity: ViewAllAppsActivity) {
         Application.scopeFrom(activity)
     }
 
-    private val interactor: GetAllLaunchableActivities by lazy {
-        GetAllLaunchableActivities(applicationScope.launchableActivityStore)
+    private val interactor: GetAllLaunchableActivitiesInteractor by lazy {
+        GetAllLaunchableActivitiesInteractor(applicationScope.launchableActivityStore)
     }
 
     private val presenter: ViewAllAppsPresenter by lazy {
         ViewAllAppsPresenter(
             interactor,
-            launchExternalActivity,
-            launchExternalApplicationSettings,
+            appLauncher,
             viewModel,
             activity.view
         )
@@ -35,11 +34,7 @@ class ViewAllAppsActivityScope(private val activity: ViewAllAppsActivity) {
         ViewModelProviders.of(activity).get(AppListViewModel::class.java).init(activity)
     }
 
-    private val launchExternalActivity: LaunchExternalActivity by lazy {
-        LaunchExternalActivity(activity)
-    }
-
-    private val launchExternalApplicationSettings: LaunchExternalApplicationSettings by lazy {
-        LaunchExternalApplicationSettings(activity)
+    private val appLauncher: AppLauncher by lazy {
+        DefaultAppLauncher(activity)
     }
 }

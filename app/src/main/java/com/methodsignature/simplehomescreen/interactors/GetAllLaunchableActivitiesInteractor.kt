@@ -14,7 +14,7 @@ import io.reactivex.Observable
  * Exception Course:
  *     1. System delivers error to the user.
  */
-class GetAllLaunchableActivities(private val activityStore: LaunchableActivityStore) {
+class GetAllLaunchableActivitiesInteractor(private val activityStore: LaunchableActivityStore) {
     fun get(): Observable<List<LaunchableActivity>> {
         return activityStore.getAll().toObservable()
     }
