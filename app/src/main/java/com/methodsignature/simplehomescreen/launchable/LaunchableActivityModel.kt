@@ -43,6 +43,9 @@ interface LaunchableActivityStore {
 
     @Insert
     fun synchronousAddAll(vararg launchableActivities: LaunchableActivity)
+
+    @Query("DELETE FROM $TABLE_NAME WHERE $COL_PACKAGE_NAME = :packageName")
+    fun deleteByPackage(packageName: String)
 }
 
 fun LaunchableActivityStore.addAll(launchableActivities: List<LaunchableActivity>): Completable {
