@@ -1,9 +1,11 @@
 package com.methodsignature.simplehomescreen.apps
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,9 +81,17 @@ class LinearViewAllAppsView @JvmOverloads constructor(
             }
 
             vh.loadDrawableRunnable = Runnable {
-                Glide.with(context)
-                    .load(context.packageManager.getActivityIcon(model.componentName))
-                    .into(vh.icon)
+                try {
+                    Glide.with(context)
+                        .load(context.packageManager.getActivityIcon(model.componentName))
+                        .into(vh.icon)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    Log.e(
+                        ViewAllAppsView::class.java.simpleName,
+                        "Unable to find activity ${model.componentName.className} for package ${model.componentName.packageName}",
+                        e
+                    )
+                }
             }
             handler.post(vh.loadDrawableRunnable)
         }
