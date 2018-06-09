@@ -9,6 +9,7 @@ import android.arch.persistence.room.Query
 import android.arch.persistence.room.RoomDatabase
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_ACTIVITY_NAME
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_PACKAGE_NAME
+import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_READABLE_NAME
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.TABLE_NAME
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -37,12 +38,11 @@ data class LaunchableActivity(
 
 @Dao
 interface LaunchableActivityStore {
-    @Query("SELECT * FROM $TABLE_NAME")
+    @Query("SELECT * FROM $TABLE_NAME ORDER BY $COL_READABLE_NAME")
     fun getAll(): Flowable<List<LaunchableActivity>>
 
     @Insert
     fun synchronousAddAll(vararg launchableActivities: LaunchableActivity)
-
 }
 
 fun LaunchableActivityStore.addAll(launchableActivities: List<LaunchableActivity>): Completable {
