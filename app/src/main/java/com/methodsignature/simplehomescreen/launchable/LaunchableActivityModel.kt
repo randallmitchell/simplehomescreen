@@ -38,7 +38,7 @@ data class LaunchableActivity(
 
 @Dao
 interface LaunchableActivityStore {
-    @Query("SELECT * FROM $TABLE_NAME ORDER BY $COL_READABLE_NAME")
+    @Query("SELECT * FROM $TABLE_NAME ORDER BY $COL_READABLE_NAME COLLATE NOCASE")
     fun getAll(): Flowable<List<LaunchableActivity>>
 
     @Insert
