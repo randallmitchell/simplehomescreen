@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.methodsignature.simplehomescreen.R
-import com.methodsignature.simplehomescreen.android.view.EvenPaddingItemDecoration
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
@@ -38,7 +37,6 @@ class LinearViewAllAppsView @JvmOverloads constructor(
         setHasFixedSize(true)
         adapter = ListAdapter()
         layoutManager = LinearLayoutManager(context)
-        addItemDecoration(EvenPaddingItemDecoration(resources.getDimension(R.dimen.standard_list_item_margin)))
     }
 
     override fun display(): Consumer<List<AppViewModel>> {
