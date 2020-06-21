@@ -3,10 +3,10 @@ package com.methodsignature.simplehomescreen.android.packagemanager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.methodsignature.simplehomescreen.interactors.ApplicationInstalledInteractor
 import com.methodsignature.simplehomescreen.interactors.ApplicationUninstalledInteractor
 import io.reactivex.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 class ApplicationUpdateBroadcastReceiver(
     private val applicationInstalledInteractor: ApplicationInstalledInteractor,
@@ -14,39 +14,38 @@ class ApplicationUpdateBroadcastReceiver(
 ): BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (!intent.extras.getBoolean(Intent.EXTRA_REPLACING, false)) {
-
+        if (intent.extras?.getBoolean(Intent.EXTRA_REPLACING, false) == true) {
             when (intent.action) {
                 Intent.ACTION_PACKAGE_ADDED -> {
-                    val packageName = intent.data.schemeSpecificPart
-                    applicationInstalledInteractor.addByPackageIfLaunchable(packageName)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            {},
-                            {
-                                Log.e(
-                                    ApplicationUpdateBroadcastReceiver::class.java.simpleName,
-                                    "Failed to add installed application",
-                                    it
-                                )
-                            }
-                        )
+                    intent.data?.schemeSpecificPart?.let { packageName ->
+                        applicationInstalledInteractor.addByPackageIfLaunchable(packageName)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                {},
+                                {
+                                    Timber.e(
+                                        it,
+                                        "Failed to add installed application"
+                                    )
+                                }
+                            )
+                    }
                 }
 
                 Intent.ACTION_PACKAGE_REMOVED -> {
-                    val packageName = intent.data.schemeSpecificPart
-                    applicationUninstalledInteractor.removeByPackageName(packageName)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            {},
-                            {
-                                Log.e(
-                                    ApplicationUpdateBroadcastReceiver::class.java.simpleName,
-                                    "Failed to remove uninstalled application",
-                                    it
-                                )
-                            }
-                        )
+                    intent.data?.schemeSpecificPart?.let { packageName ->
+                        applicationUninstalledInteractor.removeByPackageName(packageName)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                {},
+                                {
+                                    Timber.e(
+                                        it,
+                                        "Failed to remove uninstalled application"
+                                    )
+                                }
+                            )
+                    }
                 }
             }
         }

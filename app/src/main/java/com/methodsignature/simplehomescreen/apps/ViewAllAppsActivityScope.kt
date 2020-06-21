@@ -1,6 +1,6 @@
 package com.methodsignature.simplehomescreen.apps
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import com.methodsignature.simplehomescreen.Application
 import com.methodsignature.simplehomescreen.ApplicationScope
 import com.methodsignature.simplehomescreen.interactors.GetAllLaunchableActivitiesInteractor

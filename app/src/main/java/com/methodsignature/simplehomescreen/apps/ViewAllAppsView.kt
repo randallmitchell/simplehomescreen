@@ -2,15 +2,14 @@ package com.methodsignature.simplehomescreen.apps
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.methodsignature.simplehomescreen.R
 import com.methodsignature.simplehomescreen.android.view.EvenPaddingItemDecoration
@@ -18,6 +17,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import timber.log.Timber
 
 interface ViewAllAppsView {
     fun display(): Consumer<List<AppViewModel>>
@@ -65,38 +65,37 @@ class LinearViewAllAppsView @JvmOverloads constructor(
             notifyDataSetChanged()
         }
 
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            val vh = requireNotNull(holder)
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
             val model = mList[position]
-            vh.title.text = model.readableName
-            vh.itemView.setOnClickListener { clickListener.onNext(model) }
-            vh.itemView.setOnLongClickListener {
+            viewHolder.title.text = model.readableName
+            viewHolder.itemView.setOnClickListener { clickListener.onNext(model) }
+            viewHolder.itemView.setOnLongClickListener {
                 longClickListener.onNext(model)
                 true
             }
 
-            vh.loadDrawableRunnable?.apply {
-                handler.removeCallbacks(vh.loadDrawableRunnable)
+            viewHolder.loadDrawableRunnable?.apply {
+                handler.removeCallbacks(this)
             }
 
-            vh.loadDrawableRunnable = Runnable {
+            val runnable = Runnable {
                 try {
                     Glide.with(context)
                         .load(context.packageManager.getActivityIcon(model.componentName))
-                        .into(vh.icon)
+                        .into(viewHolder.icon)
                 } catch (e: PackageManager.NameNotFoundException) {
-                    Log.e(
-                        ViewAllAppsView::class.java.simpleName,
-                        "Unable to find activity ${model.componentName.className} for package ${model.componentName.packageName}",
-                        e
+                    Timber.e(
+                        e,
+                        "Unable to find activity ${model.componentName.className} for package ${model.componentName.packageName}"
                     )
                 }
             }
-            handler.post(vh.loadDrawableRunnable)
+            viewHolder.loadDrawableRunnable = runnable
+            handler.post(runnable)
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(context).inflate(R.layout.linear_view_all_apps_view_list_item, parent, false)
             return ViewHolder(view)
         }

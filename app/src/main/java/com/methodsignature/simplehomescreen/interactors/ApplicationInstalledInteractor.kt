@@ -13,16 +13,19 @@ class ApplicationInstalledInteractor(
 
     fun addByPackageIfLaunchable(packageName: String): Completable {
         return Completable.fromCallable {
-            packageManager.getLaunchIntentForPackage(packageName)?.let { launchIntent ->
+            packageManager.getLaunchIntentForPackage(packageName).let { launchIntent ->
                 packageManager.getApplicationInfo(packageName, 0).let { appInfo ->
                     packageManager.getApplicationLabel(appInfo)?.let { appLabel ->
-                        launchableActivityStore.synchronousAddAll(
-                            LaunchableActivity(
-                                packageName,
-                                launchIntent.component.className,
-                                appLabel.toString()
+                        launchIntent?.component?.className?.let { className ->
+                            launchableActivityStore.synchronousAddAll(
+                                LaunchableActivity(
+                                    packageName,
+                                    className,
+                                    appLabel.toString()
+                                )
                             )
-                        )
+
+                        }
                     }
                 }
             }

@@ -1,12 +1,12 @@
 package com.methodsignature.simplehomescreen.launchable
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.RoomDatabase
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_ACTIVITY_NAME
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_PACKAGE_NAME
 import com.methodsignature.simplehomescreen.launchable.LaunchableActivity.Companion.COL_READABLE_NAME
